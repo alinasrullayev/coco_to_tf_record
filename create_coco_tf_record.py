@@ -65,11 +65,11 @@ tf.flags.DEFINE_string('val_annotations_file', '',
                        'Validation annotations JSON file.')
 tf.flags.DEFINE_string('testdev_annotations_file', '',
                        'Test-dev annotations JSON file.')
-tf.flags.DEFINE_integer('train_num_shards', '',
+tf.flags.DEFINE_integer('train_num_shards', 1,
                        'Number of shards for training data.')
-tf.flags.DEFINE_integer('val_num_shards', '',
+tf.flags.DEFINE_integer('val_num_shards', 1,
                        'Number of shards for validation data.')
-tf.flags.DEFINE_integer('testdev_num_shards', '',
+tf.flags.DEFINE_integer('testdev_num_shards', 1,
                        'Number of shards for Test-dev data.')
 tf.flags.DEFINE_string('train_keypoint_annotations_file', '',
                        'Training annotations JSON file.')
