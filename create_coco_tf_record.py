@@ -27,6 +27,9 @@ Example usage:
       --train_annotations_file="${TRAIN_ANNOTATIONS_FILE}" \
       --val_annotations_file="${VAL_ANNOTATIONS_FILE}" \
       --testdev_annotations_file="${TESTDEV_ANNOTATIONS_FILE}" \
+      --train_num_shards="${TRAIN_NUM_SHARDS}" \
+      --val_num_shards="${VAL_NUM_SHARDS}" \
+      --testdev_num_shards="${TESTDEV_NUM_SHARDS}" \
       --output_dir="${OUTPUT_DIR}"
 """
 from __future__ import absolute_import
@@ -62,6 +65,12 @@ tf.flags.DEFINE_string('val_annotations_file', '',
                        'Validation annotations JSON file.')
 tf.flags.DEFINE_string('testdev_annotations_file', '',
                        'Test-dev annotations JSON file.')
+tf.flags.DEFINE_integer('train_num_shards', '',
+                       'Number of shards for training data.')
+tf.flags.DEFINE_integer('val_num_shards', '',
+                       'Number of shards for validation data.')
+tf.flags.DEFINE_integer('testdev_num_shards', '',
+                       'Number of shards for Test-dev data.')
 tf.flags.DEFINE_string('train_keypoint_annotations_file', '',
                        'Training annotations JSON file.')
 tf.flags.DEFINE_string('val_keypoint_annotations_file', '',
@@ -479,6 +488,10 @@ def main(_):
   assert FLAGS.train_annotations_file, '`train_annotations_file` missing.'
   assert FLAGS.val_annotations_file, '`val_annotations_file` missing.'
   assert FLAGS.testdev_annotations_file, '`testdev_annotations_file` missing.'
+    
+  train_num_shards = FLAGS.train_num_shards if FLAGS.train_num_shards else 1
+  val_num_shards = FLAGS.val_num_shards if FLAGS.val_num_shards else 1
+  testdev_num_shards = FLAGS.testdev_num_shards if FLAGS.testdev_num_shards else 1
 
   if not tf.gfile.IsDirectory(FLAGS.output_dir):
     tf.gfile.MakeDirs(FLAGS.output_dir)
@@ -491,7 +504,7 @@ def main(_):
       FLAGS.train_image_dir,
       train_output_path,
       FLAGS.include_masks,
-      num_shards=100,
+      num_shards=train_num_shards,
       keypoint_annotations_file=FLAGS.train_keypoint_annotations_file,
       densepose_annotations_file=FLAGS.train_densepose_annotations_file,
       remove_non_person_annotations=FLAGS.remove_non_person_annotations,
@@ -501,7 +514,7 @@ def main(_):
       FLAGS.val_image_dir,
       val_output_path,
       FLAGS.include_masks,
-      num_shards=50,
+      num_shards=val_num_shards,
       keypoint_annotations_file=FLAGS.val_keypoint_annotations_file,
       densepose_annotations_file=FLAGS.val_densepose_annotations_file,
       remove_non_person_annotations=FLAGS.remove_non_person_annotations,
@@ -511,7 +524,7 @@ def main(_):
       FLAGS.test_image_dir,
       testdev_output_path,
       FLAGS.include_masks,
-      num_shards=50)
+      num_shards=testdev_num_shards)
 
 
 if __name__ == '__main__':
